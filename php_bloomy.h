@@ -39,7 +39,7 @@ extern zend_module_entry bloomy_module_entry;
 #include "TSRM.h"
 #endif
 
-#define PHP_BLOOMY_VERSION "0.1.0"
+#define PHP_BLOOMY_VERSION "0.1.1"
 
 PHP_MINIT_FUNCTION(bloomy);
 PHP_MINFO_FUNCTION(bloomy);

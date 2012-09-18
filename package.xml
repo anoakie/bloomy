@@ -29,7 +29,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 
  <date>2009-03-23</date>
  <version>
-   <release>0.1.0</release>
+   <release>0.1.1</release>
    <api>0.1.0</api>
  </version>
  <stability>
@@ -80,7 +80,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <changelog>
   <release>
    <stability><release>beta</release><api>beta</api></stability>
-   <version><release>0.1.0</release><api>0.1.0</api></version>
+   <version><release>0.1.1</release><api>0.1.1</api></version>
    <date>2009-03-23</date>
    <notes>
 - Initial PECL release

@@ -259,9 +259,11 @@ int php_bloom_serialize(zval *object, unsigned char **buffer, zend_uint *buf_len
 int php_bloom_unserialize(zval **object, zend_class_entry *ce, const unsigned char *buf,
 						  zend_uint buf_len, zend_unserialize_data *data TSRMLS_DC)
 {
-#define PARSE_NEXT_NUM() \
+#define VALIDATE_NONZERO_POSITIVE_INTEGER 1
+#define VALIDATE_POSITIVE_INTEGER 0
+#define PARSE_NEXT_NUM(VALIDATE_SIZE) \
 	num = (size_t)strtol((const char *)p, &e, 10); \
-	if (num == 0 || errno == ERANGE || (*e != ',' && *e != ';') || (e+1 >= (char *)buf_end)) { \
+	if (num < VALIDATE_SIZE || errno == ERANGE || (*e != ',' && *e != ';') || (e+1 >= (char *)buf_end)) { \
 		goto err_cleanup; \
 	} \
 	p = (const unsigned char *)++e;
@@ -287,25 +289,25 @@ int php_bloom_unserialize(zval **object, zend_class_entry *ce, const unsigned ch
 	}
 	++p;
 
-	PARSE_NEXT_NUM();
+	PARSE_NEXT_NUM(VALIDATE_NONZERO_POSITIVE_INTEGER);
 	obj->bloom->spec.filter_size = (size_t)num;
 
-	PARSE_NEXT_NUM();
+	PARSE_NEXT_NUM(VALIDATE_NONZERO_POSITIVE_INTEGER);
 	obj->bloom->spec.size_bytes = (size_t)num;
 
-	PARSE_NEXT_NUM();
+	PARSE_NEXT_NUM(VALIDATE_NONZERO_POSITIVE_INTEGER);
 	if (num > UCHAR_MAX) {
 		goto err_cleanup;
 	}
 	obj->bloom->spec.num_hashes = (uint8_t)num;
 
-	PARSE_NEXT_NUM();
+	PARSE_NEXT_NUM(VALIDATE_POSITIVE_INTEGER);
 	obj->bloom->num_elements = (size_t)num;
 
-	PARSE_NEXT_NUM();
+	PARSE_NEXT_NUM(VALIDATE_NONZERO_POSITIVE_INTEGER);
 	obj->bloom->salt1 = (size_t)num;
 
-	PARSE_NEXT_NUM();
+	PARSE_NEXT_NUM(VALIDATE_NONZERO_POSITIVE_INTEGER);
 	obj->bloom->salt2 = (size_t)num;
 
 	ALLOC_INIT_ZVAL(value);
@@ -347,6 +349,8 @@ err_cleanup:
 
 	return FAILURE;
 #undef PARSE_NEXT_NUM
+#undef VALIDATE_NONZERO_POSITIVE_INTEGER
+#undef VALIDATE_POSITIVE_INTEGER
 }
 /* }}} */
 
